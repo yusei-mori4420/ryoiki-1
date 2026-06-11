@@ -4,7 +4,7 @@ import torch
 
 model = YOLO("yolov8n.pt")
 
-img_path = r"C:\Users\shazm\ryoiki\img\ex1-26.png"
+img_path = r"C:\Users\shazm\ryoiki\git\ex1-26.png"
 
 results = model(img_path, conf=0.4)
 
