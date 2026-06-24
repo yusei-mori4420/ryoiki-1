@@ -6,7 +6,7 @@ model = YOLO("best260408.pt")
 
 img_path = "ex2-26.png"
 
-results = model(img_path,conf = 0.09)
+results = model(img_path,conf = 0.02)
 
 img = results[0].orig_img
 boxes = results[0].boxes
