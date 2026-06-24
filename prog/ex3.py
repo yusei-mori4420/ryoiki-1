@@ -2,22 +2,22 @@ from ultralytics import YOLO
 import cv2
 import torch
 
-model = YOLO("yolov8n.pt")
+model = YOLO("best260408.pt")
 
-img_path = "ex2-26.png"
+img_path = "ex1-26.png"
 
-results = model(img_path, conf=0.123)
+results = model(img_path,conf = 0.55)
 
 img = results[0].orig_img
 boxes = results[0].boxes
 
-person_count = 0
+helmet_count = 0
 
 for box in boxes:
     cls = int(box.cls[0])  
 
     if cls == 0:
-        person_count += 1
+        helmet_count += 1
 
         x1, y1, x2, y2 = box.xyxy[0]
 
@@ -29,7 +29,7 @@ for box in boxes:
             3
         )
 
-print("人数:", person_count)
+print("ヘルメット数:", helmet_count)
 
 cv2.imshow("", img)
 cv2.waitKey(0)
