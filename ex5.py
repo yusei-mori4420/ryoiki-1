@@ -1,36 +1,55 @@
-import cv2
 from ultralytics import YOLO
-import torch
+import cv2
 
-# YOLOv8モデルをロード
-model = YOLO("best260408.pt")
+VIDEO_PATH = "ex5-26.mp4"
+MODEL_PATH = "best260408.pt"
+model = YOLO(MODEL_PATH)
 
-# ビデオファイルを開く
-video_path = "ex5-26.mp4"
-cap = cv2.VideoCapture(video_path)
 
-# ビデオフレームをループする
-while cap.isOpened():
-    # ビデオからフレームを読み込む
-    success, frame = cap.read()
+cap = cv2.VideoCapture(VIDEO_PATH)
 
-    if success:
-        # フレームでYOLOv8トラッキングを実行し、フレーム間でトラックを永続化
-        results = model.track(frame, persist=True)
+if not cap.isOpened():
+    print("動画を開けません")
+    exit()
 
-        # フレームに結果を可視化
-        annotated_frame = results[0].plot()
+frame_count = 0
 
-        # 注釈付きのフレームを表示
-        cv2.imshow("YOLOv8トラッキング", annotated_frame)
-
-        # 'q'が押されたらループから抜ける
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
-    else:
-        # ビデオの終わりに到達したらループから抜ける
+while True:
+    ret, frame = cap.read()
+    if not ret:
         break
 
-# ビデオキャプチャオブジェクトを解放し、表示ウィンドウを閉じる
+    frame_count += 1
+
+    results = model(frame, verbose=False)
+
+    helmet_count = 0
+
+    for result in results:
+        for box in result.boxes:
+
+            conf = float(box.conf[0])
+
+            helmet_count += 1
+
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+
+            cv2.rectangle(
+                frame,
+                (x1, y1),
+                (x2, y2),
+                (0, 0, 255),  
+                2
+            )
+
+
+    if frame_count % 30 == 0:
+        print(f"{frame_count}フレーム目 : 検出したヘルメット数 = {helmet_count}")
+
+    cv2.imshow("Helmet Detection", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
+
 cap.release()
 cv2.destroyAllWindows()
