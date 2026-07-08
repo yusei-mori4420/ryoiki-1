@@ -65,7 +65,7 @@ while True:
             helmet_count += 1
 
     if frame_count % 30 == 0:
-        print(f"{frame_count}フレーム目 : 検出したヘルメット数 = {helmet_count}")
+        print(f"{frame_count}フレーム目 : 検出したヘルメット数 : {helmet_count}")
 
     cv2.imshow("Helmet Movement Detection", frame)
 
